@@ -1,0 +1,27 @@
+{
+  "name": "@caifu/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for Caifu Markets",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint src --ext .ts,.tsx --no-error-on-unmatched-pattern",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@caifu/config": "workspace:*",
+    "viem": "^2.38.2",
+    "ethers": "^6.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/parser": "^8.46.4",
+    "typescript": "^5.7.3",
+    "eslint": "^9",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "chainId": 56,
+  "ctf": "0x289b9C58e0a0FD75e574E967E0c84eA2320084a5",
+  "marketFactory": "0x5D5c33BD67e5065bd93339C717f27CD8C6770D63",
+  "exchange": "",
+  "directOracle": "0x0B40878a6b31eA07121a1e7691e011dC14287eFD",
+  "oracleAdapter": "0xd77e3cE643877Af847b67Ec07bef0855520f5407",
+  "usdf": "0x6922e3A041870c87295E02d3814BA5871Ed38f58"
+}
