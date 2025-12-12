@@ -1,0 +1,256 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- User accounts & sessions ---
+model User {
+  id            String   @id @default(cuid())
+  walletAddress String   @unique @map("wallet_address") @db.VarChar(42)
+  displayName   String?  @map("display_name") @db.VarChar(64)
+  avatarUrl     String?  @map("avatar_url") @db.Text
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  sessions      UserSession[]
+  comments      MarketComment[]
+
+  @@map("users")
+}
+
+model UserSession {
+  id               String   @id @default(cuid())
+  userId           String   @map("user_id")
+  sessionTokenHash String   @unique @map("session_token_hash") @db.VarChar(64)
+  expiresAt        DateTime @map("expires_at") @db.Timestamp(6)
+  lastSeenAt       DateTime? @map("last_seen_at") @db.Timestamp(6)
+  revoked          Boolean  @default(false)
+  revokedAt        DateTime? @map("revoked_at") @db.Timestamp(6)
+  userAgent        String?  @map("user_agent") @db.Text
+  ipAddress        String?  @map("ip_address") @db.VarChar(64)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+model AuthNonce {
+  id            String   @id @default(cuid())
+  nonceHash     String   @unique @map("nonce_hash") @db.VarChar(64)
+  walletAddress String   @map("wallet_address") @db.VarChar(42)
+  expiresAt     DateTime @map("expires_at") @db.Timestamp(6)
+  consumed      Boolean  @default(false)
+  consumedAt    DateTime? @map("consumed_at")
+  attempts      Int      @default(0)
+  lastAttemptAt DateTime? @map("last_attempt_at")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@index([walletAddress])
+  @@map("auth_nonces")
+}
+
+model MarketComment {
+  id        String   @id @default(cuid())
+  marketId  String   @map("market_id")
+  userId    String   @map("user_id")
+  body      String   @db.Text
+  txHash    String?  @map("tx_hash") @db.VarChar(66)
+  parentId  String?  @map("parent_id")
+  edited    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  market    Market   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([marketId, createdAt])
+  @@index([userId, createdAt])
+  @@map("market_comments")
+}
+
+model Market {
+  id           String   @id @default(cuid())
+  conditionId  String?  @unique @db.VarChar(66) // Nullable for backward compatibility
+  questionId   String?  @map("question_id") @db.VarChar(66) // For CTFv2: questionId used in reportPayouts
+  ctfVersion   Int      @default(2) @map("ctf_version") // 1 = legacy CTF, 2 = CTFv2 with fixed redeem
+  title        String   @db.VarChar(200)
+  slug         String?  @db.VarChar(80)
+  category     String?  @db.VarChar(120)
+  outcomes     String[] // JSON array of outcome strings
+  status       String   @db.VarChar(20) // active, resolved, cancelled
+  createdAt    DateTime @default(now()) @db.Timestamp(6)
+  expiresAt    DateTime? @map("expires_at") @db.Timestamp(6)
+  resolvedAt   DateTime? @db.Timestamp(6)
+  resolutionData Json?   // payout numerators, etc.
+  fpmmAddress  String?  @map("fpmm_address") @db.VarChar(42)
+  tags         String[] @default([])
+  heroImageUrl String?  @map("hero_image_url") @db.Text
+
+  // Relations
+  orders       Order[]
+  trades       Trade[]
+  positions    Position[]
+  comments     MarketComment[]
+  positionBalances PositionBalance[]
+  spotPoints   MarketSpotPoint[]
+
+  @@map("markets")
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  userAddress   String   @db.VarChar(42)
+  marketId      String
+  outcome       Int
+  side          String   @db.VarChar(10) // buy, sell
+  price         String   @db.VarChar(78) // BigInt as string
+  size          String   @db.VarChar(78) // BigInt as string
+  remainingSize String   @db.VarChar(78) // BigInt as string
+  status        String   @db.VarChar(20) // open, filled, cancelled
+  eip712Hash    String   @unique @db.VarChar(66)
+  signature     String   @db.Text
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  filledAt      DateTime? @db.Timestamp(6)
+  cancelledAt   DateTime? @db.Timestamp(6)
+
+  // Relations
+  market        Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@map("orders")
+}
+
+model Trade {
+  id           String   @id @default(cuid())
+  marketId     String
+  takerAddress String   @db.VarChar(42)
+  makerAddress String   @db.VarChar(42)
+  price        String   @db.VarChar(78) // BigInt as string
+  size         String   @db.VarChar(78) // BigInt as string
+  txHash       String?  @db.VarChar(66)
+  createdAt    DateTime @default(now()) @db.Timestamp(6)
+
+  // Relations
+  market       Market  @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@map("orderbook_trades")
+}
+
+model Position {
+  id         String   @id @default(cuid())
+  userAddress String   @db.VarChar(42)
+  marketId   String
+  outcome    Int
+  quantity   String   @db.VarChar(78) // BigInt as string
+  updatedAt  DateTime @updatedAt @db.Timestamp(6)
+
+  // Relations
+  market     Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@unique([userAddress, marketId, outcome])
+  @@map("positions")
+}
+
+model PositionBalance {
+  owner         String
+  marketId      String   @map("market_id")
+  outcome       Int
+  balanceShares Decimal  @map("balance_shares") @db.Decimal(78, 0)
+  lastBlock     BigInt   @default(0) @map("last_block")
+  lastTx        String?  @map("last_tx")
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  // Relations
+  market        Market   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@id([owner, marketId, outcome])
+  @@map("position_balances")
+}
+
+model MarketTileBackground {
+  id            String   @id @default(cuid())
+  tag           String   @db.VarChar(120)
+  normalizedTag String   @map("normalized_tag") @db.VarChar(140)
+  imageUrl      String   @map("image_url") @db.Text
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  @@unique([normalizedTag])
+  @@map("market_tile_backgrounds")
+}
+
+model MarketSpotPoint {
+  id         String   @id @default(cuid())
+  marketId   String   @map("market_id")
+  timestamp  DateTime @db.Timestamp(6)
+  yesPrice   Decimal  @map("yes_price") @db.Decimal(18, 10)
+  noPrice    Decimal  @map("no_price") @db.Decimal(18, 10)
+
+  market     Market   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@index([marketId, timestamp])
+  @@unique([marketId, timestamp])
+  @@map("market_spot_points")
+}
+
+model Tag {
+  id         String   @id @default(cuid())
+  name       String   @unique @db.VarChar(64)
+  normalized String   @unique @map("normalized_name") @db.VarChar(64)
+  visible    Boolean  @default(true)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  @@map("tags")
+}
+
+/// These legacy/system tables are managed outside of Prisma.
+/// We declare them with @@ignore so `prisma db push` will not drop them.
+
+model MarketSync {
+  marketId       String  @id @map("market_id")
+  lastIndexed    BigInt  @map("last_indexed_block")
+  lastAuditBlock BigInt? @map("last_audit_block")
+  sweeping       Boolean
+  updatedAt      DateTime @map("updated_at")
+
+  @@map("market_sync")
+  @@ignore
+}
+
+model ReconState {
+  id          Boolean @id
+  rpcQps1m    Decimal? @map("rpc_qps1m")
+  last429At   DateTime? @map("last_429_at")
+  backoffMs   Int? @map("backoff_ms")
+  jobsPending Int? @map("jobs_pending")
+  jobsInflight Int? @map("jobs_inflight")
+  updatedAt   DateTime? @map("updated_at")
+
+  @@map("recon_state")
+  @@ignore
+}
+
+model SchemaMigration {
+  id        String  @id
+  appliedAt DateTime @map("applied_at")
+
+  @@map("schema_migrations")
+  @@ignore
+}
+
+model SystemKV {
+  key       String @id
+  value     String
+  updatedAt DateTime @map("updated_at")
+
+  @@map("system_kv")
+  @@ignore
+}
