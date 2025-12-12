@@ -1,0 +1,74 @@
+{
+  "name": "caifu-markets",
+  "version": "0.1.0",
+  "description": "Polymarket-style prediction market on BSC with USDF collateral",
+  "private": true,
+  "packageManager": "pnpm@10.18.3",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "contracts/*"
+  ],
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "bash -lc 'if [ \"$VERCEL\" = \"1\" ]; then exit 0; fi; pnpm --recursive --parallel build'",
+    "vercel-build": "bash -lc 'pnpm -C frontend install --no-frozen-lockfile && pnpm -C frontend build'",
+    "test": "pnpm --recursive --parallel test",
+    "lint": "pnpm --recursive --parallel lint",
+    "contracts:build": "cd contracts && forge build",
+    "contracts:deploy:testnet": "cd contracts && forge script script/DeployAllTestnet.s.sol:DeployAllTestnet --rpc-url https://bsc-testnet.publicnode.com --private-key $PRIVATE_KEY --broadcast",
+    "markets:create:binary": "node apps/api/scripts/createBinaryMarket.js",
+    "ops:db:migrate": "pnpm --filter api db:migrate",
+    "ops:db:seed": "pnpm --filter api db:seed",
+    "docker:up": "docker-compose -f ops/docker-compose.yml up",
+    "docker:down": "docker-compose -f ops/docker-compose.yml down",
+    "clean": "pnpm --recursive --parallel clean",
+    "smoke:write": "tsx scripts/write-smoke.ts",
+    "dev:api": "pnpm --filter @caifu/api dev",
+    "dev:front": "pnpm --filter @caifu/frontend dev",
+    "e2e:beta": "tsx scripts/e2e/run-beta-cycle.mts",
+    "test:ws-health": "tsx scripts/test-ws-health.ts",
+    "test:ws-heartbeat": "tsx scripts/test-ws-heartbeat.ts",
+    "test:ws-hot-reload": "tsx scripts/test-ws-hot-reload.ts",
+    "test:validate": "tsx scripts/test-validate.ts",
+    "print:flags": "tsx scripts/print-flags.ts",
+    "market:bitcoin": "tsx scripts/create-bitcoin-200k-market.ts",
+    "sanity:oracle": "tsx scripts/oracle-sanity-check.mts",
+    "subgraph:clean": "pnpm --filter @caifu/subgraph clean",
+    "subgraph:prepare": "pnpm --filter @caifu/subgraph sync",
+    "subgraph:codegen": "pnpm --filter @caifu/subgraph codegen",
+    "subgraph:build": "pnpm --filter @caifu/subgraph build",
+    "subgraph:test": "pnpm --filter @caifu/subgraph test",
+    "subgraph:deploy": "pnpm --filter @caifu/subgraph deploy",
+    "postinstall": "node scripts/remove-thread-stream-tests.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/ws": "^8.5.10",
+    "chokidar": "^4.0.3",
+    "concurrently": "^8.0.0",
+    "dotenv": "^16.6.1",
+    "execa": "^9.6.0",
+    "fetch-cookie": "^3.0.1",
+    "next": "16.0.3",
+    "puppeteer-core": "^24.26.1",
+    "puppeteer-har": "^1.1.2",
+    "tough-cookie": "^5.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "undici": "^6.21.1",
+    "ws": "^8.16.0"
+  },
+  "engines": {
+    "node": "22.x",
+    "pnpm": ">=10.18.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "@wagmi/core": "^2.19.4"
+    },
+    "patchedDependencies": {
+      "thread-stream@0.15.2": "patches/thread-stream@0.15.2.patch"
+    }
+  }
+}

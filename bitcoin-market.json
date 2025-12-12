@@ -1,0 +1,13 @@
+{
+  "marketId": "3",
+  "title": "Will Bitcoin hit $200k by the end of 2025?",
+  "conditionId": "0x73e811c20b033cc518f21963cde8616f71abbd9f5ede99c428025cfb59688eee",
+  "questionId": "0x3333333333333333333333333333333333333333333333333333333333333333",
+  "oracle": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "openTime": "1760428564",
+  "closeTime": "1767139200",
+  "usdfAddress": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+  "ctfAddress": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+  "factoryAddress": "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+  "createdAt": "2025-10-14T07:56:08.912Z"
+}

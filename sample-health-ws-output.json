@@ -1,0 +1,21 @@
+{
+  "startedAt": 1697123456789,
+  "connections": 2,
+  "totalConnections": 15,
+  "reconnects": 1,
+  "lastHeartbeatAt": 1697123470100,
+  "lastTradeEventAt": 1697123465000,
+  "lastMessageAt": 1697123468000,
+  "lastPingAt": 1697123470000,
+  "lastPongAt": 1697123470100,
+  "missedHeartbeats": 3,
+  "droppedForIdle": 2,
+  "uptimeMs": 123456,
+  "alerts": {
+    "hasWarnedNoClients": false,
+    "hasWarnedNoTrades": false,
+    "lastClientActiveAt": 1697123470100,
+    "lastTradeEventAt": 1697123465000
+  }
+}
+
