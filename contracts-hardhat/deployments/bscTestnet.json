@@ -1,0 +1,35 @@
+{
+  "chainId": 97,
+  "network": "bscTestnet",
+  "updatedAt": "2025-11-14T11:02:37Z",
+  "contracts": {
+    "ConditionalTokens": {
+      "address": "0x0f1D3915E4fa08adbC0B0A0d959B72F72692F044",
+      "deployer": "0x8c2A746238a029f0f80d5B517e45842E9B77EfD8",
+      "deploymentTx": "0x500dcf8ba95a88d7ca6d0cdd1b04634de0f2437695d86a17e01ef47f4afca30d",
+      "blockNumber": 73399999
+    },
+    "DirectCTFOracle": {
+      "address": "0x98298a7894cCeCe3973Ac757A37C8940c07c93c5",
+      "deployer": "0x8c2A746238a029f0f80d5B517e45842E9B77EfD8",
+      "deploymentTx": "0x546bcd7f4083cc997403cfeb8d208ad320257983d27816d5e48149f0a3751455",
+      "blockNumber": 74777193
+    },
+    "DirectOracleAdapter": {
+      "address": "0xD18595258e8EAD62612cDFd5287b3f0f030b1654",
+      "deployer": "0x8c2A746238a029f0f80d5B517e45842E9B77EfD8",
+      "deploymentTx": "0xa34865ec6a72242f43d84e8a850f3b8890ec86a0b694db4543eaf2e80d1b4dcf",
+      "blockNumber": 74777197
+    },
+    "FixedProductMarketMakerFactory": {
+      "address": "0x1e97fbc10f7ebecfb069780571b94b4344b53c4c",
+      "deployer": "0x8c2A746238a029f0f80d5B517e45842E9B77EfD8",
+      "deploymentTx": "0xcbfa78f7d0ea62090fc51a83f2fb6c239993b21186225412425dfcc0d829f363",
+      "blockNumber": 72388389,
+      "parameters": {
+        "collateral": "0x7f7a19dBBd52beaBEb10DA810e926362e7aBda29",
+        "defaultFee": "10000000000000000"
+      }
+    }
+  }
+}

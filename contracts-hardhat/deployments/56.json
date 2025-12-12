@@ -1,0 +1,46 @@
+{
+  "network": "bscMainnet",
+  "chainId": 56,
+  "deployedAt": "2025-11-29T00:00:00Z",
+  "deployer": "0x748cDafa4C24f01193573a3405A3008680b41804",
+  "contracts": {
+    "USDF": {
+      "address": "0x6922e3A041870c87295E02d3814BA5871Ed38f58",
+      "blockNumber": 69931180,
+      "txHash": "0xe3126883936b6c5614423275e0b5e015dd58b1e718ea44343a6d8336dd77c474",
+      "constructorArgs": []
+    },
+    "FixedProductMarketMakerFactory": {
+      "address": "0x5D5c33BD67e5065bd93339C717f27CD8C6770D63",
+      "blockNumber": null,
+      "txHash": "0xcfd4651c30fb8278533a96fd2a64f9d97383dfe6553ad3e4652a7f478eae5998",
+      "constructorArgs": [
+        "0x6922e3A041870c87295E02d3814BA5871Ed38f58",
+        "20000000000000000"
+      ]
+    },
+    "ConditionalTokens": {
+      "address": "0x289b9C58e0a0FD75e574E967E0c84eA2320084a5",
+      "blockNumber": null,
+      "txHash": "0xbcc1855f0bfcd95ac2555f3690daea625271d66bf22d6f920b4a16196b4716f0",
+      "constructorArgs": []
+    },
+    "DirectCTFOracle": {
+      "address": "0x0B40878a6b31eA07121a1e7691e011dC14287eFD",
+      "blockNumber": null,
+      "txHash": "0xc01d1f7ebe65abadb8fb6c0d993fa0fd07fb8cb536e2ae549081d85bbbc33a2e",
+      "constructorArgs": [
+        "0x289b9C58e0a0FD75e574E967E0c84eA2320084a5",
+        "0x748CDafA4C24F01193573a3405A3008680b41804"
+      ]
+    },
+    "DirectOracleAdapter": {
+      "address": "0xd77e3cE643877Af847b67Ec07bef0855520f5407",
+      "blockNumber": null,
+      "txHash": "0xf4a4aa58df7ee0ee59863c2a20c695d139d85d685e3631ee9b8966aea6d545df",
+      "constructorArgs": [
+        "0x289b9C58e0a0FD75e574E967E0c84eA2320084a5"
+      ]
+    }
+  }
+}

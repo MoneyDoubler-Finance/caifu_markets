@@ -1,0 +1,32 @@
+{
+  "name": "@caifu/contracts-hardhat",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "hardhat": "hardhat",
+    "build": "tsc",
+    "deploy:usdf-mainnet:bsc": "hardhat run --network bscTestnet scripts/deploy-usdf-mainnet.ts",
+    "deploy:fpmmFactory:bsc": "hardhat run --network bscTestnet scripts/deploy-fpmm-factory.ts",
+    "deploy:ctf-stack:bsc": "hardhat run --network bscTestnet scripts/deploy-ctf-stack.ts",
+    "deploy:all:bsc": "hardhat run --network bscTestnet scripts/deploy/all.ts",
+    "smoke:fpmm:bsc": "hardhat run --network bscTestnet scripts/fpmm-smoke.ts"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.3",
+    "@nomicfoundation/hardhat-toolbox-viem": "latest",
+    "@nomicfoundation/hardhat-verify": "^3.0.7",
+    "@types/chai": "^4.3.11",
+    "@types/node": "^22.10.5",
+    "chai": "^4.5.0",
+    "hardhat": "^3.0.14",
+    "solc": "^0.8.30",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.15.0"
+  }
+}
